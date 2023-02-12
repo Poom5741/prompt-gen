@@ -1,27 +1,52 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
 
-function App() {
-  const [apiData, setApiData] = useState(null);
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: theme.spacing(4),
+  },
+  button: {
+    marginTop: theme.spacing(2),
+  },
+  response: {
+    marginTop: theme.spacing(2),
+    fontFamily: "monospace",
+  },
+}));
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch("http://95.216.202.238:5000/");
-      const data = await response.json();
-      setApiData(data);
+const App = () => {
+  const [response, setResponse] = useState("");
+  const classes = useStyles();
+
+  const callAPI = async () => {
+    try {
+      const res = await fetch("http://95.216.202.238:5000/");
+      const json = await res.json();
+      setResponse(JSON.stringify(json, null, 2));
+    } catch (error) {
+      setResponse(`Error: ${error.message}`);
     }
-    fetchData();
-  }, []);
+  };
 
   return (
-    <div>
-      <button onClick={() => {}}>Call API</button>
-      {apiData ? (
-        <pre>{JSON.stringify(apiData, null, 2)}</pre>
-      ) : (
-        <p>Press the button to call the API.</p>
+    <Box className={classes.root}>
+      <Button variant="contained" color="primary" onClick={callAPI} className={classes.button}>
+        Get API Response
+      </Button>
+      {response && (
+        <Typography variant="body2" className={classes.response}>
+          {response}
+        </Typography>
       )}
-    </div>
+    </Box>
   );
-}
+};
 
 export default App;
+
