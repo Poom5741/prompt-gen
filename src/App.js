@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
 
 function App() {
+  const [apiData, setApiData] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("http://95.216.202.238:5000/");
+      const data = await response.json();
+      setApiData(data);
+    }
+    fetchData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <button onClick={() => {}}>Call API</button>
+      {apiData ? (
+        <pre>{JSON.stringify(apiData, null, 2)}</pre>
+      ) : (
+        <p>Press the button to call the API.</p>
+      )}
     </div>
   );
 }
